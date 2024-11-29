@@ -1,0 +1,37 @@
+services:
+  geracao_frame:
+    build:
+      context: .
+      dockerfile: geracao_frames/Dockerfile
+    volumes:
+      - D:/01_Squad8_Chip/volumeFrame:/app/volumeFrame
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LINK_CAMERA=http://host.docker.internal:8080/
+      - LARGURA_IMAGEM=1280
+      - ALTURA_IMAGEM=720
+      - FOTOS_SEGUNDO=5
+    depends_on:
+      - deteccao_e_alerta
+
+  deteccao_e_alerta:
+    build:
+      context: .
+      dockerfile: deteccao_frames/Dockerfile
+    volumes:
+      - D:/01_Squad8_Chip/volumeFrame:/app/volumeFrame
+      - D:/01_Squad8_Chip/volumeFrameTreinamento:/app/volumeFrameTreinamento
+      - D:/01_Squad8_Chip/volumeYolo:/app/volumeYolo
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ALTA_PRECISAO=0.65
+      - BAIXA_PRECISAO=0.5
+      - LARGURA_IMAGEM=1280
+      - ALTURA_IMAGEM=720
+      - URL_ENVIO_IMAGEM_API=http://host.docker.internal:8081/upload
+      - ID_CLASSE_DETECTAR=1
+
+volumes:
+  volumeFrame:
+  volumeFrameTreinamento:
+  volumeYolo:
